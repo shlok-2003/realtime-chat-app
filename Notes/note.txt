@@ -1,0 +1,56 @@
+WebSocket is a computer communications protocol, providing simultaneous two-way communication channels over a single Transmission Control Protocol 
+connection. The WebSocket protocol was standardized by the IETF as RFC 6455 in 2011.
+
+Suppose you have a client and the server. Now whenever the client want some data, it will call the server, get the data and close the connection
+and again when it want some data, it will call the server, get the data and close the connection. This is how the normal http request works.
+
+But suppose in case of the chat app, the message would be in real time, and if we constantly open and close the connection, it will be very slow.
+Think about all the 1 lakh users, if they open and close the connection, it will be very slow. Again and again looking in case for the data results in polling.
+Now Polling is a technique where the client sends the request to the server and the server sends the response to the client. This is how the polling works.
+
+But in case of websockets, the connection is not closed. The connection is kept open and the client can send the data to the server and the server 
+can send the data to the client. This is how the websockets work.
+
+The websockets are created very easily by sending an Upgrade header in the http request. The server then sends the response with the Upgrade header.
+With the help of the Upgrade header, you can upgrade the request from http 1.1 to http 2.0, https, etc.
+Example of the header is shown below:
+
+GET /chat HTTP/1.1
+Host: example.com:8000
+connection: Upgrade
+Upgrade: websocket
+
+We will be using the socket.io library for the websockets. The socket.io library is a library that enables real-time, bidirectional and event-based 
+communication between the browser and the server.
+
+SERVER NOTES:
+We are using express here, now alongside the app created ---> const app = express(), we have to attach the socket.io to the app. This cannot be done 
+directly and hence we will use http module using createServer method. The code is shown below:
+
+const http = require('http');
+const server = http.createServer(app);
+
+Now install the socket.io module and use { Server } from 'socket.io' to create the server. With the help of this, we can create io, which stands for
+input-output. Now all the express api will be handled by the express server and all the socket.io api will be handled by the `io`.
+
+With the help of the socket.io, we can do the following things:
+
+1. There are two entities, io and the sockets. The sockets are the clients that are connected to the server. The io is the server itself. It comprises 
+of all the sockets.
+
+2. With the help of .on() function, we can listen to the events. The events are the events that are emitted by the client and the server listens to it.
+3. With the help of .emit() function, we can emit the events. The events are emitted by the server and the client listens to it.
+    Note: We can use .emit() on both the front and the back end side, depending on the use-cases.
+
+4. With the help of .broadcast.emit() function, we can emit the events to all the clients except the one who emitted the event.
+5. With the help of .io.emit() function, we can emit the events to all the clients including the one who emitted the event.
+
+6. With the help of .to() function, we can emit the events to the specific client. The client is specified by the id of the client. This is 
+helpful in implementing the private chat feature.
+
+7. With the help of .join() function, we can join the client to the room. The room is a group of clients. The client can be in multiple rooms.
+8. With the help of .leave() function, we can leave the client from the room.
+
+9. With the help of .to().emit() function, we can emit the events to the specific room.
+
+10. With the help of .disconnect() function, we can disconnect the client from the server.
